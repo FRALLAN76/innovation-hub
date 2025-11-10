@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idé- och Behovshubben</title>
+    <meta name="description" content="Samla in, analysera och utveckla medarbetarnas idéer till framtidens tjänster">
+
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1><i class="fas fa-lightbulb"></i> Idé- och Behovshubben</h1>
+            <p>Samla in, analysera och utveckla medarbetarnas idéer till framtidens tjänster</p>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Navigation Tabs -->
+            <nav class="nav-tabs">
+                <button class="nav-tab active" data-tab="dashboard">
+                    <i class="fas fa-clock"></i> Senaste Idéer
+                </button>
+                <button class="nav-tab" data-tab="submit">
+                    <i class="fas fa-plus-circle"></i> Lämna Idé
+                </button>
+                <button class="nav-tab" data-tab="browse">
+                    <i class="fas fa-list"></i> Bläddra Idéer
+                </button>
+                <button class="nav-tab" data-tab="analysis">
+                    <i class="fas fa-brain"></i> Analys
+                </button>
+                <button class="nav-tab" data-tab="documents">
+                    <i class="fas fa-folder-open"></i> Dokument
+                </button>
+            </nav>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <div class="card">
+                    <h2><i class="fas fa-lightbulb"></i> Senaste Idéer</h2>
+                    <p style="color: var(--neutral-gray); margin-bottom: var(--space-lg);">
+                        De 20 senast inlämnade idéerna och förslagen från medarbetare.
+                    </p>
+                    <div id="recentIdeas">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Submit Idea Section -->
+            <section id="submit" class="content-section">
+                <div class="card">
+                    <h2>Lämna en Idé</h2>
+
+                    <div id="submitSuccess" class="success" style="display: none;">
+                        <i class="fas fa-check-circle"></i> Idén har lämnats in framgångsrikt!
+                    </div>
+
+                    <div id="submitError" class="error" style="display: none;">
+                        <i class="fas fa-exclamation-triangle"></i> Ett fel uppstod. Försök igen.
+                    </div>
+
+                    <form id="ideaForm">
+                        <div class="form-group">
+                            <label for="title" class="form-label">Titel *</label>
+                            <input type="text" id="title" name="title" class="form-control"
+                                   placeholder="Kortfattad beskrivning av din idé" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description" class="form-label">Beskrivning *</label>
+                            <textarea id="description" name="description" class="form-control"
+                                      placeholder="Beskriv din idé i detalj. Vad är problemet du vill lösa? Hur skulle din lösning fungera?" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="type" class="form-label">Typ *</label>
+                            <select id="type" name="type" class="form-control" required>
+                                <option value="">Välj typ</option>
+                                <option value="idé">Idé - Ny lösning eller förbättring</option>
+                                <option value="problem">Problem - Något som behöver lösas</option>
+                                <option value="behov">Behov - Något som saknas</option>
+                                <option value="förbättring">Förbättring - Utveckling av befintligt</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="targetGroup" class="form-label">Målgrupp *</label>
+                            <select id="targetGroup" name="target_group" class="form-control" required>
+                                <option value="">Vem gynnas mest av detta?</option>
+                                <option value="medborgare">Medborgare</option>
+                                <option value="företag">Företag</option>
+                                <option value="medarbetare">Medarbetare</option>
+                                <option value="andra organisationer">Andra organisationer</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="submitterEmail" class="form-label">Din e-post *</label>
+                            <input type="email" id="submitterEmail" name="submitter_email" class="form-control"
+                                   placeholder="din.email@kommun.se" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tags" class="form-label">Taggar (valfritt)</label>
+                            <input type="text" id="tags" name="tags" class="form-control"
+                                   placeholder="digitalisering, ai, automation (separera med komma)">
+                            <small style="color: var(--neutral-gray); font-size: var(--font-size-sm);">
+                                Lägg till relevanta nyckelord för att göra din idé lättare att hitta
+                            </small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Skicka Idé
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Browse Ideas Section -->
+            <section id="browse" class="content-section">
+                <div class="card">
+                    <h2>Alla Idéer</h2>
+
+                    <!-- Filters -->
+                    <div class="filters">
+                        <h3>Filter</h3>
+                        <div class="filters-grid">
+                            <div class="form-group">
+                                <label for="filterStatus" class="form-label">Status</label>
+                                <select id="filterStatus" class="form-control">
+                                    <option value="">Alla statusar</option>
+                                    <option value="ny">Ny</option>
+                                    <option value="granskning">Granskning</option>
+                                    <option value="godkänd">Godkänd</option>
+                                    <option value="utveckling">Utveckling</option>
+                                    <option value="implementerad">Implementerad</option>
+                                    <option value="avvisad">Avvisad</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="filterType" class="form-label">Typ</label>
+                                <select id="filterType" class="form-control">
+                                    <option value="">Alla typer</option>
+                                    <option value="idé">Idé</option>
+                                    <option value="problem">Problem</option>
+                                    <option value="behov">Behov</option>
+                                    <option value="förbättring">Förbättring</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="filterSearch" class="form-label">Sök</label>
+                                <input type="text" id="filterSearch" class="form-control"
+                                       placeholder="Sök i titel och beskrivning">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">&nbsp;</label>
+                                <button id="applyFilters" class="btn btn-primary">
+                                    <i class="fas fa-filter"></i>
+                                    Filtrera
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ideas List -->
+                    <div id="ideasList" class="idea-list">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Manage Ideas Section -->
+            <!-- Analysis Section -->
+            <section id="analysis" class="content-section">
+                <!-- Service Mapping Overview -->
+                <div class="card">
+                    <h2><i class="fas fa-brain"></i> AI-driven Tjänstemappning</h2>
+                    <p style="color: var(--neutral-gray); margin-bottom: var(--space-lg);">
+                        Se hur dina idéer mappar mot befintliga tjänster och var det finns utvecklingsbehov.
+                    </p>
+
+                    <div id="serviceMappingOverview" class="service-mapping-grid">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Development Needs Matrix -->
+                <div class="card">
+                    <h3><i class="fas fa-chart-scatter"></i> Utvecklingsbehov Matrix</h3>
+                    <p style="color: var(--neutral-gray); font-size: 0.9rem; margin-bottom: var(--space-md);">
+                        Prioritera idéer baserat på matchning mot befintliga tjänster och strategisk påverkan.
+                    </p>
+                    <div id="developmentMatrix">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Matched Services -->
+                <div class="card">
+                    <h3><i class="fas fa-trophy"></i> Mest Matchade Tjänster</h3>
+                    <p style="color: var(--neutral-gray); font-size: 0.9rem; margin-bottom: var(--space-md);">
+                        Tjänster som får flest utvecklingsförslag från medarbetare.
+                    </p>
+                    <div id="topMatchedServices">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gap Analysis -->
+                <div class="card">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Gap-analys</h3>
+                    <p style="color: var(--neutral-gray); font-size: 0.9rem; margin-bottom: var(--space-md);">
+                        Områden med många idéer men ingen befintlig tjänst - strategiska utvecklingsmöjligheter.
+                    </p>
+                    <div id="gapAnalysis">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Confidence -->
+                <div class="card">
+                    <h3><i class="fas fa-robot"></i> AI-analys Tillförlitlighet</h3>
+                    <div id="aiConfidence">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Analysis Transparency -->
+                <div class="card">
+                    <h3><i class="fas fa-microscope"></i> AI-analys Transparens</h3>
+                    <p style="color: var(--neutral-gray); font-size: 0.9rem; margin-bottom: var(--space-md);">
+                        Se hur AI:n har analyserat och kategoriserat varje idé.
+                    </p>
+                    <div id="aiTransparency">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Documents Section -->
+            <section id="documents" class="content-section">
+                <!-- Upload Card -->
+                <div class="card">
+                    <h2><i class="fas fa-upload"></i> Ladda upp Dokument</h2>
+                    <p style="color: var(--neutral-gray); margin-bottom: var(--space-lg);">
+                        Ladda upp tjänstebeskrivningar och dokumentation för att förbättra AI-matchning.
+                        Stödjer: PDF, Word, Excel, Text.
+                    </p>
+
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: var(--secondary-blue); margin-bottom: var(--space-md);"></i>
+                        <h3>Dra och släpp filer här</h3>
+                        <p>eller</p>
+                        <label for="fileInput" class="btn btn-primary" style="cursor: pointer;">
+                            <i class="fas fa-folder-open"></i> Välj filer
+                        </label>
+                        <input type="file" id="fileInput" multiple accept=".pdf,.docx,.doc,.xlsx,.xls,.txt" style="display: none;">
+                        <small style="color: var(--neutral-gray); margin-top: var(--space-md); display: block;">
+                            Max 10MB per fil. Stöd för: PDF, DOCX, XLSX, TXT
+                        </small>
+                    </div>
+
+                    <!-- Upload Progress -->
+                    <div id="uploadProgress" style="display: none; margin-top: var(--space-lg);">
+                        <div class="upload-item">
+                            <div class="upload-info">
+                                <strong id="uploadFileName">filnamn.pdf</strong>
+                                <span id="uploadStatus">Laddar upp...</span>
+                            </div>
+                            <div class="progress-bar-container" style="margin-top: var(--space-sm);">
+                                <div class="progress-bar" id="uploadProgressBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upload Results -->
+                    <div id="uploadResults" style="margin-top: var(--space-lg);"></div>
+                </div>
+
+                <!-- RAG Stats Card -->
+                <div class="card">
+                    <h3><i class="fas fa-chart-bar"></i> RAG-statistik</h3>
+                    <div id="ragStats">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document List Card -->
+                <div class="card">
+                    <h3><i class="fas fa-list"></i> Uppladdade Dokument</h3>
+                    <div id="documentList">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Edit Idea Modal -->
+    <div id="editModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit"></i> Redigera Idé</h2>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editIdeaForm">
+                    <input type="hidden" id="editIdeaId">
+
+                    <div class="form-group">
+                        <label for="editTitle" class="form-label">Titel *</label>
+                        <input type="text" id="editTitle" name="title" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editDescription" class="form-label">Beskrivning *</label>
+                        <textarea id="editDescription" name="description" class="form-control" rows="6" required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editType" class="form-label">Typ *</label>
+                            <select id="editType" name="type" class="form-control" required>
+                                <option value="idé">Idé</option>
+                                <option value="problem">Problem</option>
+                                <option value="behov">Behov</option>
+                                <option value="förbättring">Förbättring</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editTargetGroup" class="form-label">Målgrupp *</label>
+                            <select id="editTargetGroup" name="target_group" class="form-control" required>
+                                <option value="medborgare">Medborgare</option>
+                                <option value="företag">Företag</option>
+                                <option value="medarbetare">Medarbetare</option>
+                                <option value="andra_organisationer">Andra organisationer</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="editReanalyze" checked>
+                            Kör AI-analys igen efter uppdatering
+                        </label>
+                        <small style="display: block; color: var(--neutral-gray); margin-top: var(--space-xs);">
+                            Rekommenderas om du ändrat titel eller beskrivning
+                        </small>
+                    </div>
+
+                    <div id="editError" class="error" style="display: none; margin-bottom: var(--space-md);"></div>
+                    <div id="editSuccess" class="success" style="display: none; margin-bottom: var(--space-md);"></div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeEditModal()">
+                            Avbryt
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Spara ändringar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/ui.js"></script>
+    <script src="/static/js/analysis.js"></script>
+    <script src="/static/js/documents.js"></script>
+    <script src="/static/js/edit.js"></script>
+    <script src="/static/js/voting.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
